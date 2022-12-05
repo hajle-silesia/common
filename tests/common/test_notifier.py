@@ -24,7 +24,7 @@ def mocked_requests_post(*args, **kwargs):
     if args[0] in url.values():
         return MockResponse(None, 204)
     else:
-        raise TimeoutError
+        raise BaseException
 
 
 @unittest.mock.patch("common.notifier.requests.post", side_effect=mocked_requests_post)

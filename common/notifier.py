@@ -40,5 +40,11 @@ class Notifier:
     def _notify_observer(self, url, data):
         try:
             return requests.post(url, base64.b64encode(json.dumps(data, default=str).encode()))
+<<<<<<< HEAD
         except TimeoutError:
             print(f"Timeout for observer with URL: {url}")
+=======
+        except BaseException as err:
+            print(f"Timeout for observer with URL: {url}")
+            print(f"EXCEPTION: {err=}, {type(err)}")
+>>>>>>> 6f69bca (Added timeout test case)
