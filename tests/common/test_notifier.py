@@ -3,6 +3,8 @@ import os
 import pathlib
 import unittest.mock
 
+import urllib3
+
 import common.notifier
 import common.storage
 import common.utils
@@ -24,7 +26,7 @@ def mocked_requests_post(*args, **kwargs):
     if args[0] in url.values():
         return MockResponse(None, 204)
     else:
-        return MockResponse(None, 404)
+        raise urllib3.exceptions.ConnectTimeoutError
 
 
 @unittest.mock.patch("common.notifier.requests.post", side_effect=mocked_requests_post)
@@ -151,6 +153,13 @@ class TestNotifier(unittest.TestCase):
 
     def test_Should_GetEmptyResponses_When_ClassInstanceWasCreated(self, mock_get):
         self.assertEqual([], self.notifier.responses)
+
+    def test_Should_HandleTimeoutException_When_UnknownObserverWasRegisteredAndNotifyTimedOut(self, mock_get):
+        self.notifier.register_observer({'unknown_observer': "http://unknown_observer/update"})
+        self.notifier.notify_observers("test_data")
+
+        self.assertEqual(1, len(self.notifier.responses))
+        self.assertEqual(None, self.notifier.responses[0])
 
     def test_Should_NotifyObserver_When_OneObserverWasRegisteredAndNotifyWasInvoked(self, mock_get):
         self.notifier.register_observer(url_1)
