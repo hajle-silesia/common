@@ -2,7 +2,6 @@ import base64
 import json
 
 import requests
-import urllib3
 
 
 class Notifier:
@@ -41,5 +40,5 @@ class Notifier:
     def _notify_observer(self, url, data):
         try:
             return requests.post(url, base64.b64encode(json.dumps(data, default=str).encode()))
-        except urllib3.exceptions.ConnectTimeoutError:
-            print(f"Connection timeout for observer with URL: {url}")
+        except TimeoutError:
+            print(f"Timeout for observer with URL: {url}")

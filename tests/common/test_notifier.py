@@ -3,8 +3,6 @@ import os
 import pathlib
 import unittest.mock
 
-import urllib3
-
 import common.notifier
 import common.storage
 import common.utils
@@ -26,7 +24,7 @@ def mocked_requests_post(*args, **kwargs):
     if args[0] in url.values():
         return MockResponse(None, 204)
     else:
-        raise urllib3.exceptions.ConnectTimeoutError
+        raise TimeoutError
 
 
 @unittest.mock.patch("common.notifier.requests.post", side_effect=mocked_requests_post)
